@@ -1,0 +1,73 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.coverage
+.tox/
+.pytest_cache/
+htmlcov/
+
+# Virtual environment
+.venv/
+venv/
+env/
+/venv/
+/env/
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+*.orig
+*.pyc
+
+# OS generated files
+.DS_Store
+.Trashes
+Thumbs.db
+
+# MyPy
+.mypy_cache/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Database files
+*.sqlite3
+*.db
+
+
+# User defined
+utils/dump_vd_counts
+G4beamline-3.08
+*.root
+*.tgz
+*.tar.gz
+*.csv
+.__afs14DF
+outPDFs
+outPDFs*
+*.pdf
+

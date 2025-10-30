@@ -1,0 +1,1804 @@
+#######################################################
+##################### VARIABLES #######################
+#######################################################
+
+
+randomseed Time
+
+param -unset InitEnergy=250
+param -unset pMomentum=1000.0*$InitEnergy
+param -unset pMomentumRef=100000.0
+
+
+param -unset jobID=1
+param -unset outRoot=H4_Positron_v9_NormalBeam_Air_FullHodoscope_2023_$InitEnergy.GeV_$jobID.root
+param -unset totNumEv=1000
+
+
+
+param numEvel=$totNumEv*0.90	# 90% e+
+param numEvPr=$totNumEv*0.10	# 10% proton
+param n1el=($jobID-1)*$totNumEv+1
+param n1Pr=$n1el+$numEvel
+
+
+param -unset pencil=1.0		# 0.0 for Pencil Beam, 1.0 for normal beam
+param -unset ratio=0.0		# 20.0 for +%20, -20.0 for -%20
+param -unset beamWindows=1 				# 1 for on / 0 for off
+param -unset Scints=1					# 1 for on / 0 for off
+param -unset WireChambers=1 			# 1 for on / 0 for off
+param -unset GIFShielding=0 			# 1 for on / 0 for off
+param -unset ECALBox=0					# 1 for on / 0 for off
+param -unset killSecondariesOnOff=0 	# 1 for on / 0 for off
+
+## 0.001225 air density
+#material WetAir density=0.0011839 temperature=291.75 AIR,0.6 WATER_VAPOR,0.4
+#param -unset worldM=WetAir 	# World Material
+#param -unset worldM=Vacuum
+param -unset worldM=Air
+
+# Reduce verbosity
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+/hits/verbose 0
+/material/verbose 0
+/process/setVerbose 0 all
+/process/verbose 0
+/process/eLoss/verbose 0
+
+
+#######################################################
+################### Primary Beam ######################
+#######################################################
+#########     Secondary beam of NA64-e      ###########
+######### Sigma X,Y in [mm], SigmaXp in rad ###########
+#######################################################
+#######################################################
+
+
+param -unset sigmaX_In=$pencil*(0.5+(0.5*($ratio/100)))
+param -unset sigmaY_In=$pencil*(0.44+(0.44*($ratio/100)))
+param -unset sigmaXp_In=$pencil*(0.00025+(0.00025*($ratio/100)))
+param -unset sigmaYp_In=$pencil*(0.00023+(0.00023*($ratio/100)))
+param -unset sigmaP_In=$pencil*(-($pMomentum*1.4/(100)))  # %1.4 momentum spread
+
+
+beam gaussian particle=e+ meanMomentum=$pMomentum beamZ=25415.0 \
+sigmaX=$sigmaX_In sigmaY=$sigmaY_In sigmaXp=$sigmaXp_In sigmaYp=$sigmaYp_In \
+firstEvent=$n1el nEvents=$numEvel sigmaP=$sigmaP_In
+
+beam gaussian particle=proton meanMomentum=$pMomentum beamZ=25415.0 \
+sigmaX=$sigmaX_In sigmaY=$sigmaY_In sigmaXp=$sigmaXp_In sigmaYp=$sigmaYp_In \
+firstEvent=$n1Pr nEvents=$numEvPr sigmaP=$sigmaP_In
+
+
+#########################################################
+########### Upstream Collimator Settings ################
+#########################################################
+
+
+
+
+
+#######################################################
+######### Values of Quads Field Gradient (T/m) ########
+#######################################################
+
+param -unset Q1=3.628963211
+param -unset Q2=6.697591973
+param -unset Q3=-6.737334448
+param -unset Q4=-5.529464883
+param -unset Q5=7.19022408
+param -unset Q6=-4.668183946
+param -unset Q7=7.19022408
+param -unset Q8=-5.529464883
+param -unset Q9=7.238772575
+param -unset Q10=-5.568729097
+param -unset Q11=-5.568729097
+param -unset Q12=7.238772575
+param -unset Q13=-0.284792642
+param -unset Q14=-5.469397993
+param -unset Q15=1.313010033
+param -unset Q16=1.573187291
+param -unset Q23=-6.089622074
+param -unset Q24=4.95090301
+
+
+###########################
+##### VLE Quadrupoles #####
+###########################
+
+param -unset Q17=0
+param -unset Q18=0
+param -unset Q19=0
+param -unset Q20=0
+param -unset Q21=0
+param -unset Q22=0
+
+
+
+
+#######################################################
+######### Values of B [T], for both h+v bends #########
+########### Signs according the direction! ############ 
+#######################################################
+
+
+#param -unset B1y=-0.291865625
+#param -unset B2y=-0.364834375
+#param -unset B3y=+0.456034
+#param -unset B4y=+0.456034
+#param -unset B5y=+0.338292
+#param -unset B6y=-0.456854
+#param -unset B7y=-0.456854
+#param -unset B8y=-0.480334
+#param -unset B9y=-0.480334
+param -unset B17ax=0
+param -unset B17bx=0
+
+###################
+#### VLE BENDS ####
+###################
+
+param -unset B18x=0
+param -unset B19x=0
+param -unset B20x=0
+
+
+##########################################
+################ Collimators #############
+##########################################
+
+
+param -unset c1m=-45.0
+param -unset c1p=+45.0
+
+param -unset c2m=-45.0
+param -unset c2p=+45.0
+
+param -unset c3m=-50.0
+param -unset c3p=+50.0
+
+param -unset c4m=-45.0
+param -unset c4p=+45.0
+
+param -unset c5m=-45.0
+param -unset c5p=+45.0
+
+param -unset c6m=-50.0
+param -unset c6p=+50.0
+
+param -unset c7m=-50.0
+param -unset c7p=+50.0
+
+param -unset c8m=-45.0
+param -unset c8p=+45.0
+
+param -unset c9m=-45.0
+param -unset c9p=+45.0
+
+param -unset c10m=-50.0
+param -unset c10p=+50.0
+
+
+
+
+
+
+
+
+
+
+
+
+#######################################################################
+######## Constants & Variables for Bends, Quads & Calculations ########
+#######################################################################
+
+
+param -unset PGeV=$pMomentum/1000. #Particle Energy
+param -unset PGeVRef=$pMomentumRef/1000.
+param -unset er0=2.8179403e-15 # <- Classical Electron Radius [m]
+param -unset em0=0.5109989e-3 # <- Classical Electron Mass [GeV/c]
+param -unset econst=(2*$er0)/(3*($em0^3)) # <- Constant part of DeltaP Formula
+param -unset SoL=299.792458 # <- Speed of Light
+
+#### Quad Length [m]
+param -unset QNL_L=2.99
+
+
+#### Bend Length [m]
+param -unset MSNH_L=3.2
+param -unset MBNH_L=5.0
+param -unset MBNV_L=5.0
+param -unset MCAH_L=2.5
+
+
+
+
+param -unset MBPH_L=2.0
+
+
+
+
+
+#########################################################
+####### Energy Correction for each bend and quad! #######
+#########################################################
+## Theta=2.8, 6.836 etc. from BEATCH file
+##########################################
+
+## 2.8e-3 or 3.5e-3 numbers comes from the BEATCH file.
+
+## Magnet 1
+param -unset B1y=(((2.8*$PGeV)/($SoL*$MSNH_L)))
+param -unset DeltaP1=($econst*($PGeV^4)*((2.8e-3)^2))/$MSNH_L
+param PGeV=$PGeV-$DeltaP1
+
+## Magnet 2
+param -unset B2y=(((3.5*$PGeV)/($SoL*$MSNH_L)))
+param -unset DeltaP2=($econst*($PGeV^4)*((3.5e-3)^2))/$MSNH_L
+param PGeV=$PGeV-$DeltaP2
+
+
+
+## Quad 1, 2, 3
+param Q1=($Q1*$PGeV)/($PGeVRef*$QNL_L)
+param Q2=($Q2*$PGeV)/($PGeVRef*$QNL_L)
+param Q3=($Q3*$PGeV)/($PGeVRef*$QNL_L)
+
+
+## Magnet 3
+param -unset B3a=-(((6.836*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP3a=($econst*($PGeV^4)*((6.836e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP3a
+
+## Magnet 4
+param -unset B4a=-(((6.836*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP4a=($econst*($PGeV^4)*((6.836e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP4a
+
+## Magnet 5
+param -unset B4b=-(((6.836*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP4b=($econst*($PGeV^4)*((6.836e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP4b
+
+## Magnet 6
+param -unset B3b=-(((6.836*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP3b=($econst*($PGeV^4)*((6.836e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP3b
+
+## Magnet 7
+param -unset B3c=-(((6.836*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP3c=($econst*($PGeV^4)*((6.836e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP3c
+
+## Magnet 8
+param -unset B4c=-(((6.836*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP4c=($econst*($PGeV^4)*((6.836e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP4c
+
+
+## Quad 4, 5
+param Q4=($Q4*$PGeV)/($PGeVRef*$QNL_L)
+param Q5=($Q5*$PGeV)/($PGeVRef*$QNL_L)
+
+
+## Magnet 9
+param -unset B5a=-(((2.535*$PGeV)/($SoL*$MCAH_L)))
+param -unset DeltaP5a=($econst*($PGeV^4)*((2.535e-3)^2))/$MCAH_L
+param PGeV=$PGeV-$DeltaP5a
+
+## Magnet 10
+param -unset B5b=-(((2.535*$PGeV)/($SoL*$MCAH_L)))
+param -unset DeltaP5b=($econst*($PGeV^4)*((2.535e-3)^2))/$MCAH_L
+param PGeV=$PGeV-$DeltaP5b
+
+## Magnet 11
+param -unset B5c=-(((2.535*$PGeV)/($SoL*$MCAH_L)))
+param -unset DeltaP5c=($econst*($PGeV^4)*((2.535e-3)^2))/$MCAH_L
+param PGeV=$PGeV-$DeltaP5c
+
+## Magnet 12
+param -unset B5d=-(((2.535*$PGeV)/($SoL*$MCAH_L)))
+param -unset DeltaP5d=($econst*($PGeV^4)*((2.535e-3)^2))/$MCAH_L
+param PGeV=$PGeV-$DeltaP5d
+
+
+## Quad 6a
+param Q6a=($Q6*$PGeV)/($PGeVRef*$QNL_L)
+
+
+## Magnet 13
+param -unset B5e=-(((2.535*$PGeV)/($SoL*$MCAH_L)))
+param -unset DeltaP5e=($econst*($PGeV^4)*((2.535e-3)^2))/$MCAH_L
+param PGeV=$PGeV-$DeltaP5e
+
+## Magnet 14
+param -unset B5f=-(((2.535*$PGeV)/($SoL*$MCAH_L)))
+param -unset DeltaP5f=($econst*($PGeV^4)*((2.535e-3)^2))/$MCAH_L
+param PGeV=$PGeV-$DeltaP5f
+
+## Magnet 15
+param -unset B5g=-(((2.535*$PGeV)/($SoL*$MCAH_L)))
+param -unset DeltaP5g=($econst*($PGeV^4)*((2.535e-3)^2))/$MCAH_L
+param PGeV=$PGeV-$DeltaP5g
+
+## Magnet 16
+param -unset B5h=-(((2.535*$PGeV)/($SoL*$MCAH_L)))
+param -unset DeltaP5h=($econst*($PGeV^4)*((2.535e-3)^2))/$MCAH_L
+param PGeV=$PGeV-$DeltaP5h
+
+
+## Quad 7a, 8a, 8b, 7b, 6b, 9, 10
+param Q7a=($Q7*$PGeV)/($PGeVRef*$QNL_L)
+param Q8a=($Q8*$PGeV)/($PGeVRef*$QNL_L)
+param Q8b=($Q8*$PGeV)/($PGeVRef*$QNL_L)
+param Q7b=($Q7*$PGeV)/($PGeVRef*$QNL_L)
+param Q6b=($Q6*$PGeV)/($PGeVRef*$QNL_L)
+param Q9=($Q9*$PGeV)/($PGeVRef*$QNL_L)
+param Q10=($Q10*$PGeV)/($PGeVRef*$QNL_L)
+
+
+## Magnet 17
+param -unset B6a=(((6.848*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP6a=($econst*($PGeV^4)*((6.848e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP6a
+
+## Magnet 18
+param -unset B7a=(((6.848*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP7a=($econst*($PGeV^4)*((6.848e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP7a
+
+## Magnet 19
+param -unset B7b=(((6.848*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP7b=($econst*($PGeV^4)*((6.848e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP7b
+
+## Magnet 20
+param -unset B6b=(((6.848*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP6b=($econst*($PGeV^4)*((6.848e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP6b
+
+## Magnet 21
+param -unset B6c=(((6.848*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP6c=($econst*($PGeV^4)*((6.848e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP6c
+
+## Magnet 22
+param -unset B7c=(((6.848*$PGeV)/($SoL*$MBNV_L)))
+param -unset DeltaP7c=($econst*($PGeV^4)*((6.848e-3)^2))/$MBNV_L
+param PGeV=$PGeV-$DeltaP7c
+
+
+## Quad 11, 12, 13
+param Q11=($Q11*$PGeV)/($PGeVRef*$QNL_L)
+param Q12=($Q12*$PGeV)/($PGeVRef*$QNL_L)
+param Q13=($Q13*$PGeV)/($PGeVRef*$QNL_L)
+
+
+## Magnet 23
+param -unset B8a=(((7.2*$PGeV)/($SoL*$MBNH_L)))
+param -unset DeltaP8a=($econst*($PGeV^4)*((7.2e-3)^2))/$MBNH_L
+param PGeV=$PGeV-$DeltaP8a
+
+## Magnet 24
+param -unset B8b=(((7.2*$PGeV)/($SoL*$MBNH_L)))
+param -unset DeltaP8b=($econst*($PGeV^4)*((7.2e-3)^2))/$MBNH_L
+param PGeV=$PGeV-$DeltaP8b
+
+## Magnet 25
+param -unset B9a=(((7.2*$PGeV)/($SoL*$MBNH_L)))
+param -unset DeltaP9a=($econst*($PGeV^4)*((7.2e-3)^2))/$MBNH_L
+param PGeV=$PGeV-$DeltaP9a
+
+## Magnet 26
+param -unset B9b=(((7.2*$PGeV)/($SoL*$MBNH_L)))
+param -unset DeltaP9b=($econst*($PGeV^4)*((7.2e-3)^2))/$MBNH_L
+param PGeV=$PGeV-$DeltaP9b
+
+
+
+## Quad 14, 15, 16a, 16b, 23 ,24
+param Q14=($Q14*$PGeV)/($PGeVRef*$QNL_L)
+param Q15=($Q15*$PGeV)/($PGeVRef*$QNL_L)
+param Q16a=($Q16*$PGeV)/($PGeVRef*$QNL_L)
+param Q16b=($Q16*$PGeV)/($PGeVRef*$QNL_L)
+param Q23=($Q23*$PGeV)/($PGeVRef*$QNL_L)
+param Q24=($Q24*$PGeV)/($PGeVRef*$QNL_L)
+
+
+
+param -unset TotalB=abs($B1y+$B2y+$B3a+$B4a+$B4b+$B3b+$B3c+$B4c+$B5a+$B5b+$B5c+$B5d+$B5e+$B5f+$B5g+$B5h+$B6a+$B7a+$B7b+$B6b+$B6c+$B7c+$B8a+$B8b+$B9a+$B9b)*10.0 #KGaus
+param DP=($pMomentum/1000.0)-$PGeV
+
+param -unset nf=(0.144*$TotalB*106.4)
+param -unset neff=$nf^(-1/2)
+
+param -unset MEAN=$PGeV
+param -unset STDDEV=$neff*$DP
+
+
+
+#######################################################
+############ Cherenkov Pressure and density ###########
+#######################################################
+
+param -unset dens1=0.004278  # [g/cm3] FR12 @ 1bar @ 7 GeV
+param -unset dens2=0.0074105  # [g/cm3] CO2 @ 4bar @ 7 GeV
+param -unset XCET1p=0.986923  # FR12 @ 1bar - 0.98   [atm]
+param -unset XCET2p=4.93462   # Co2  @ 4 bar - 3.94767  [atm]
+param -unset temp1=293.15    #  [K]
+param -unset temp2=293.15    #  [K]
+
+
+
+
+#########################################################
+####################### Colors ##########################
+#########################################################
+
+param -unset vacuumPipeColor=0.6,0.6,0.6
+particlecolor proton=1,0,0 pi+=0,1,0 mu+=0,0,1 plus=1,0,1 minus=1,1,0 \
+              neutral=0,1,1 reference=1,1,1
+
+
+
+#########################################################
+################# General Definitions ###################
+#########################################################
+
+param worldMaterial=$worldM maxStep=50.0
+physics FTFP_BERT_EMZ spinTracking=1 gammaToMuPair=1 synchrotronRadiation=1
+
+
+### to fasten the simulation I increase the limit to 100 MeV
+trackcuts killSecondaries=$killSecondariesOnOff kineticEnergyCut=4.0 maxTime=100000000
+
+
+
+#########################################################
+#########################################################
+#########################################################
+
+
+
+#########################################################
+################# Reference Mangnets ####################
+#########################################################
+
+genericbend MTNH fieldWidth=240.0 fieldHeight=60.0 fieldLength=3600.0 \
+	ironColor=1,0,0 ironWidth=1200.0 ironHeight=690.0 ironLength=3600.0 kill=0 \
+	fieldMaterial=Vacuum
+
+genericbend MSNH fieldWidth=114.0 fieldHeight=60.0 fieldLength=3200.0 \
+	ironColor=1,0,0 ironWidth=470.0 ironHeight=514.0 ironLength=3200.0 kill=0 \
+	fieldMaterial=Vacuum
+
+genericbend MBNH fieldWidth=130.0 fieldHeight=60.0 fieldLength=5000.0 \
+	ironColor=1,0,0 ironWidth=1068.0 ironHeight=598.0 ironLength=5000.0 kill=0 \
+	fieldMaterial=Vacuum
+
+genericbend MBNV fieldWidth=130.0 fieldHeight=60.0 fieldLength=5000.0 \
+	ironColor=1,0,0 ironWidth=1068.0 ironHeight=598.0 ironLength=5000.0 kill=0 \
+	fieldMaterial=Vacuum
+
+genericbend MCAH fieldWidth=160.0 fieldHeight=80.0 fieldLength=2500.0 \
+	ironColor=1,0,0 ironWidth=1246.0 ironHeight=1250.0 ironLength=2500.0 kill=0 \
+	fieldMaterial=Vacuum
+
+genericbend MBPH fieldWidth=135.7 fieldHeight=135.7 fieldLength=2000.0 \
+	ironColor=1,0,0 ironWidth=1740.0 ironHeight=598.0 ironLength=2000.0 kill=0 \
+	fieldMaterial=Vacuum
+
+#########################################################
+#########################################################
+#########################################################
+
+# genericbend MBPV1 fieldWidth=200.0 fieldHeight=133.0 fieldLength=2000.0\
+#	ironColor=1,0,0 ironWidth=1740.0 ironHeight=598.0 ironLength=2000.0 kill=0 \
+#	fieldMaterial=Vacuum
+
+# genericbend MBPVs fieldWidth=135.7 fieldHeight=135.7 fieldLength=1000.0\
+#	ironColor=1,0,0 ironWidth=1740.0 ironHeight=598.0 ironLength=1000.0 kill=0 \
+#	fieldMaterial=Vacuum
+
+# genericbend MBPH1 fieldWidth=135.7 fieldHeight=135.7 fieldLength=2000.0 \
+#	ironColor=1,0,0 ironWidth=1740.0 ironHeight=598.0 ironLength=2000.0 kill=0 \
+#	fieldMaterial=Vacuum
+
+#########################################################
+### Because the H4-VLE magnet has a special tube/pipe ###
+#########################################################
+
+genericbend MBPV fieldWidth=200 fieldHeight=133.0 fieldLength=2000.0\
+	ironColor=1,0,0 ironWidth=1740.0 ironHeight=598.0 ironLength=2000.0 kill=0 
+
+genericbend MIB fieldWidth=800 fieldHeight=800.0 fieldLength=3200.0 \
+	ironColor=1,0,0 ironWidth=800.02 ironHeight=800.2 ironLength=3200.02 kill=0 
+
+genericquad QPL fieldLength=2000.0 apertureRadius=100.0\
+	ironLength=2000.0 ironRadius=406.0 ironColor=0,.6,0 kill=0 \
+	fieldMaterial=Vacuum
+genericquad QPS fieldLength=1000.0 apertureRadius=100.0 \
+	ironLength=1000.0 ironRadius=406.0 ironColor=0,.6,0 kill=0 \
+	fieldMaterial=Vacuum
+genericquad QNL fieldLength=2990.0 apertureRadius=40.0\
+	ironLength=2990.0 ironRadius=804.0 ironColor=0,.6,0 kill=0 \
+	fieldMaterial=Vacuum gradient=4
+genericquad QWL fieldLength=2948.0 apertureRadius=50.0 \
+	ironLength=2948.0 ironRadius=840.0 ironColor=0,.6,0 kill=0 \
+	fieldMaterial=Vacuum
+genericquad QSL fieldLength=3000.0 apertureRadius=50.0 \
+	ironLength=3000.0 ironRadius=520.0 ironColor=0,.6,0 kill=0 \
+	fieldMaterial=Vacuum
+
+
+#########################################################
+#################### GIF++ Shielding ####################
+#########################################################
+
+#param shieldRefX=-608.64 shieldRefY=-2211.3 shieldRefZ=685585.0
+param shieldRefX=-608.64 shieldRefY=-2211.3 shieldRefZ=612295.0
+box FLOOR1 width=5600 height=800 length=9600 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box FLOOR2 width=4800 height=800 length=4800 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box FLOOR3 width=4800 height=800 length=8000 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box FLOOR4 width=4800 height=800 length=4000 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box FLOOR1b width=4800 height=800 length=1600 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+
+box BLOCKtarg1 width=2400 height=2400 length=800 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box BLOCKtarg2 width=1600 height=2400 length=800 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box BLOCKtarg3 width=800 height=2400 length=1600 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box ROOF1 width=4000 height=800 length=800 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box WALL1 width=1600 height=3200 length=8000 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+
+box WALL2a width=800 height=3200 length=2400 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box WALL2b width=800 height=2400 length=3200 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box WALL2c width=800 height=3200 length=3200 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box WALL2d width=800 height=3200 length=5600 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+
+box DUMPfeet width=1600 height=600 length=800 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box DUMPbody width=1600 height=1600 length=2400 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box DUMPneck width=800 height=800 length=2400 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box DUMPhead width=1600 height=800 length=2400 material=CONCRETE color=0.5,0.8,0.8,1 kill=0
+box DUMPiron width=800 height=800 length=2600 material=Fe color=0.8,0.8,0.8,1 kill=0
+
+box XCSHV width=100.0 height=100.0 length=1000.0 material=Fe color=0.8,0.8,0.8 kill=0
+box XCHV  width=100.0 height=100.0 length=500.0 material=Fe color=0.8,0.8,0.8 kill=0
+box Collimator width=100.0 height=100.0 length=1000.0 material=Fe color=0.8,0.8,0.8 kill=0
+box DUMP width=1000.0 height=1000.0 length=1000.0 material=Fe color=0.5,0.8,0.8 kill=0
+
+tubs Targ outerRadius=50.0 length=300.0 material=Cu color=0.8,0.6,0.8 kill=0
+box AIRXTDV width=800 height=800 length=7000 material=Air color=1,0,0 kill=0
+
+
+
+# - Materials 
+
+box trigger width=100.0 height=100.0 length=2.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+
+material scintilator density=1.032 C,0.918 H,0.082 
+material FR12 density=$dens1 pressure=$XCET1p temperature=$temp1 C,0.099333 Cl,0.586419 F,0.314228
+material CO2 density=$dens2 pressure=$XCET2p temperature=$temp2  C,0.272919 O,0.727084
+material ARCO2 density=0.001752 Ar,0.5 CARBON_DIOXIDE,0.5
+
+param -unset MatCH1=FR12 # Freon12 @ 1 bar  @ 7 GeV
+param -unset MatCH2=CO2  # CO2     @ 4 bar @ 7 GeV
+
+# - Vacuum Tubes # not modelled in H4 for the moment. 
+
+# - XCETs - Slightly different from H2
+
+tubs XCET1 outerRadius=100 length=2240.0  material=$MatCH1 color=0,1,1 kill=0 
+tubs XCET2 outerRadius=100 length=2170.0  material=$MatCH2  color=0,1,2 kill=0
+
+# - Membrane and Membrane Tube @ Detector
+
+#tubs CRYOTUB  innerRadius=225.0 outerRadius=227.0 length=809.3 material=Al color=0,1,2  kill=0
+#tubs CRYOMEM  outerRadius=227.0 length=1.2  material=Fe color=1,1,1 kill=0 
+
+tubs VAC159_0701 innerRadius=79.5 outerRadius=81.5 length=690.0 material=Al color=$vacuumPipeColor kill=0
+
+# - Beam Windows
+
+tubs BEAMWINDOW  outerRadius=102.0 length=0.85 material=Al kill=0 
+
+#########################################################
+##################### Detectors #########################
+#########################################################
+
+virtualdetector Det radius=200.0 length=0.1 material=Vacuum
+virtualdetector DetTube radius=79.5 length=0.1 material=Vacuum
+# virtualdetector Lag height=20000.0 width=20000 length=0.1 material=Vacuum
+detector Lag height=16000.0  width=11967 length=0.1 material=Vacuum perTrack=1
+
+virtualdetector BPROF123 radius=200.0 length=2.0 material=scintilator referenceParticle=1
+virtualdetector BPROF4   radius=200.0 length=4.0 material=scintilator referenceParticle=1
+virtualdetector SCINT radius=200.0 length=2.0 color=0.5,0.8,0.8 material=scintilator
+virtualdetector ECAL width=150.0 height=150.0 length=0.1 material=Vacuum
+virtualdetector ECAL_Back width=200.0 height=200.0 length=0.1 material=Vacuum
+
+virtualdetector BeforeMCP width=20.0 height=40.0 length=0.5 color=1.0,1.0,1.0 material=Vacuum
+
+
+#########################################################
+############### Delay Wire Chambers (DWCs) ##############
+#########################################################
+
+group DWCs length=56.0
+box XDWC_Kapton width=110.0 height=110.0 length=0.2 material=KAPTON color=1.0,0.7,0.0 kill=0
+box XDWC_ARCO2 width=110.0 height=110.0 length=27.5 material=ARCO2 color=1.0,0.0,0.0 kill=0
+box XDWC_Be width=110.0 height=110.0 length=0.003 material=Be color=0.0,1.0,0.0 kill=0
+
+place XDWC_Be z=0.0
+place XDWC_Kapton z=-27.6015
+place XDWC_Kapton z=+27.6015
+place XDWC_ARCO2 z=-13.7515
+place XDWC_ARCO2 z=+13.7515
+endgroup
+
+
+
+#########################################################
+##################### Group Definitions #################
+#########################################################
+
+
+group MDSV length=700.0
+box VerticalLeftIron width=184.0 height=664.0 length=700.0 color=1.0,0.5,0.0 material=Fe
+box VerticalRightIron width=184.0 height=664.0 length=700.0 color=1.0,0.5,0.0 material=Fe
+box HorizontalUpIron width=70.0 height=282.0 length=700.0 color=1.0,0.5,0.0 material=Fe
+box HorizontalDownIron width=70.0 height=282.0 length=700.0 color=1.0,0.5,0.0 material=Fe
+box trimVacuum width=70.0 height=70.0 length=700.0 material=Vacuum color=0.5,0.5,0.0 kill=0
+
+place VerticalRightIron z=0.0 x=+35+92
+place VerticalLeftIron z=0.0 x=-35-92
+place HorizontalUpIron z=0.0 y=+50.0+141.0
+place HorizontalDownIron z=0.0 y=-50.0-141.0
+place trimVacuum z=0.0
+endgroup
+#######################################################################
+
+group MDXH length=400.0
+box VerticalIronLeft width=120.0 height=600.0 length=400.0 color=1.0,0.5,0.0 material=Fe
+box VerticalIronRight width=120.0 height=600.0 length=400.0 color=1.0,0.5,0.0 material=Fe
+box HorizontalIronUp width=360.0 height=250.0 length=400.0 color=1.0,0.5,0.0 material=Fe
+box HorizontalIronDown width=360.0 height=250.0 length=400.0 color=1.0,0.5,0.0 material=Fe
+box trimVacuum width=100.0 height=100.0 length=400.0 material=Vacuum color=0.5,0.5,0.0 kill=0
+
+place VerticalIronRight z=0.0 x=+180.0+60.0
+place VerticalIronLeft z=0.0 x=-180.0-60.0
+place HorizontalIronUp z=0.0 y=+50.0+125.0
+place HorizontalIronDown z=0.0 y=-50.0-125.0
+place trimVacuum z=0.0
+endgroup
+#######################################################################
+
+group MDXV length=400.0
+box VerticalLeftIron width=250.0 height=600.0 length=400.0 color=1.0,0.5,0.0 material=Fe
+box VerticalRightIron width=250.0 height=600.0 length=400.0 color=1.0,0.5,0.0 material=Fe
+box HorizontalUpIron width=100.0 height=120.0 length=400.0 color=1.0,0.5,0.0 material=Fe
+box HorizontalDownIron width=100.0 height=120.0 length=400.0 color=1.0,0.5,0.0 material=Fe
+box trimVacuum width=100.0 height=100.0 length=400.0 material=Vacuum color=0.5,0.5,0.0 kill=0
+
+place VerticalRightIron z=0.0 x=+50.0+125.0
+place VerticalLeftIron z=0.0 x=-50.0-125.0
+place HorizontalUpIron z=0.0 y=+180.0+60.0
+place HorizontalDownIron z=0.0 y=-180.0-60.0
+place trimVacuum z=0.0
+endgroup
+#######################################################################
+
+
+group MCP1 length=56.36
+box FrontALBigDown length=2.5 width=88.66 height=48.03 color=1.0,1.0,0.0 material=Al
+box FrontALBigUp length=2.5 width=88.66 height=48.03 color=1.0,1.0,0.0 material=Al
+box FrontALSmallRight length=2.5 width=35.33 height=18.0 color=1.0,1.0,0.0 material=Al
+box FrontALSmallLeft length=2.5 width=35.33 height=18.0 color=1.0,1.0,0.0 material=Al
+
+box BackALBig length=2.5 width=88.66 height=114.06 color=1.0,1.0,0.0 material=Al
+
+
+box UpAL length=51.36 width=88.66 height=2.5 color=1.0,1.0,0.0 material=Al
+box DownAL length=51.36 width=88.66 height=2.5 color=1.0,1.0,0.0 material=Al
+box RightAL length=51.36 width=2.5 height=114.06 color=1.0,1.0,0.0 material=Al
+box LeftAL length=51.36 width=2.5 height=114.06 color=1.0,1.0,0.0 material=Al
+tubs PhotoChatode outerRadius=9.0 length=1.2 material=Pyrex_Glass color=0.0,0.5,0.5
+tubs MCPs outerRadius=9.0 length=0.4 material=GLASS_LEAD color=0.1,0,0,0.0
+
+place PhotoChatode z=-1.0
+place MCPs z=0.0
+place MCPs z=0.4
+place FrontALBigDown z=-26.93 y=+9+24.015
+place FrontALBigUp z=-26.93 y=-9-24.015
+place FrontALSmallRight z=-26.93 x=+9+17.665
+place FrontALSmallLeft z=-26.93 x=-9-17.665
+place UpAL z=0.0 y=57.03
+place DownAL z=0.0 y=-57.03
+place RightAL z=0.0 x=45.58
+place LeftAL z=0.0 x=-45.58
+
+place BackALBig z=26.93
+endgroup
+##################################################################################
+
+group MCP2 length=56.36
+box FrontALBig length=2.5 width=88.66 height=114.06 color=1.0,1.0,0.0 material=Al
+
+box BackALBigDown length=2.5 width=88.66 height=114.06 color=1.0,1.0,0.0 material=Al
+
+box UpAL length=51.36 width=88.66 height=2.5 color=1.0,1.0,0.0 material=Al
+box DownAL length=51.36 width=88.66 height=2.5 color=1.0,1.0,0.0 material=Al
+box RightAL length=51.36 width=2.5 height=114.06 color=1.0,1.0,0.0 material=Al
+box LeftAL length=51.36 width=2.5 height=114.06 color=1.0,1.0,0.0 material=Al
+tubs PhotoChatode outerRadius=9.0 length=1.2 material=Pyrex_Glass color=0.0,0.5,0.5
+tubs MCPs outerRadius=9.0 length=0.4 material=GLASS_LEAD color=0.1,0,0,0.0
+
+place PhotoChatode z=-1.0
+place MCPs z=0.0
+place MCPs z=0.4
+
+place FrontALBig z=-26.93 
+
+place UpAL z=0.0 y=57.03
+place DownAL z=0.0 y=-57.03
+place RightAL z=0.0 x=45.58
+place LeftAL z=0.0 x=-45.58
+
+place BackALBig z=26.93
+endgroup
+###################################################################################
+
+group Hodoscope length=3577.5
+box Iron1 width=40.0 height=80.0 length=1970.0 color=1.0,0.5,0.0 material=Fe
+box Iron2 width=40.0 height=180.0 length=80.0 color=1.0,0.5,0.0 material=Fe
+box Iron3 width=270.0 height=80.0 length=80.0 color=1.0,0.5,0.0 material=Fe
+box Iron4 width=40.0 height=80.0 length=775.0 color=1.0,0.5,0.0 material=Fe
+box Iron5 width=40.0 height=80.0 length=350.0 color=1.0,0.5,0.0 material=Fe
+box Iron6 width=40.0 height=80.0 length=360.0 color=1.0,0.5,0.0 material=Fe
+box Iron7 width=40.0 height=40.0 length=360.0 color=1.0,0.5,0.0 material=Fe
+box Iron8 width=270.0 height=80.0 length=40.0 color=1.0,0.5,0.0 material=Fe
+box Iron9 width=40.0 height=180.0 length=80.0 color=1.0,0.5,0.0 material=Fe
+box Iron10 width=270.0 height=40.0 length=40.0 color=1.0,0.5,0.0 material=Fe
+box Iron11 width=270.0 height=80.0 length=40.0 color=1.0,0.5,0.0 material=Fe
+box SCINT2 width=34.0 height=40.0 length=3.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+box SCINT3 width=10.0 height=10.0 length=1.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+box SCINT4 width=50.0 height=50.0 length=5.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+box AddScint1 width=25.0 height=35.0 length=5.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+box AddScint2 width=15.0 height=30.0 length=5.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+box AddScint3 width=30.0 height=40.0 length=5.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+
+group Mylar length=10.0
+box Mylar1 width=30.0 height=75.0 length=10.0 color=0.0,0.0,1.0 material=MYLAR
+box Mylar2 width=120.0 height=180.0 length=10.0 color=0.0,0.0,1.0 material=MYLAR
+
+place Mylar1 z=0.0 x=0.0 y=+52.5
+place Mylar1 z=0.0 x=0.0 y=-52.5
+place Mylar2 z=0.0 x=+75.0 y=0.0
+place Mylar2 z=0.0 x=-75.0 y=0.0
+endgroup
+
+group PyrexGlass length=10.0
+box Mylar1 width=30.0 height=75.0 length=2.0 color=1.0,1.0,1.0,0.2 material=Pyrex_Glass
+box Mylar2 width=120.0 height=180.0 length=2.0 color=1.0,1.0,1.0,0.2 material=Pyrex_Glass
+
+place Mylar1 z=0.0 x=0.0 y=+52.5
+place Mylar1 z=0.0 x=0.0 y=-52.5
+place Mylar2 z=0.0 x=+75.0 y=0.0
+place Mylar2 z=0.0 x=-75.0 y=0.0
+endgroup
+
+group ScintsWithIron1 length=25.0
+box ScintFe1 width=50.0 height=10.0 length=2.0 color=1.0,1.0,1.0 material=Fe
+box ScintFe2 width=10.0 height=70.0 length=2.0 color=1.0,1.0,1.0 material=Fe
+box Scint width=34.0 height=40.0 length=3.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+
+place ScintFe1 z=-11.5 x=0.0 y=+30.0
+place ScintFe1 z=-11.5 x=0.0 y=-30.0
+place ScintFe2 z=-11.5 x=+30.0 y=0.0
+place ScintFe2 z=-11.5 x=-30.0 y=0.0
+place Scint z=+10.0 x=0.0 y=0.0
+endgroup
+
+group ScintsWithIron2 length=25.0
+box ScintFe1 width=50.0 height=10.0 length=2.0 color=1.0,1.0,1.0 material=Fe
+box ScintFe2 width=10.0 height=70.0 length=2.0 color=1.0,1.0,1.0 material=Fe
+box Scint width=43.0 height=30.0 length=3.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+
+place ScintFe1 z=-11.5 x=0.0 y=+30.0
+place ScintFe1 z=-11.5 x=0.0 y=-30.0
+place ScintFe2 z=-11.5 x=+30.0 y=0.0
+place ScintFe2 z=-11.5 x=-30.0 y=0.0
+place Scint z=+10.0 x=0.0 y=0.0
+endgroup
+
+group ScintsWithIron3 length=24.0
+box ScintFe1 width=50.0 height=10.0 length=2.0 color=1.0,1.0,1.0 material=Fe
+box ScintFe2 width=10.0 height=70.0 length=2.0 color=1.0,1.0,1.0 material=Fe
+box Scint width=43.0 height=30.0 length=2.0 material=Scintillator color=0.6,0.6,0.0 kill=0
+
+place ScintFe1 z=-10.0 x=0.0 y=+30.0
+place ScintFe1 z=-10.0 x=0.0 y=-30.0
+place ScintFe2 z=-10.0 x=+30.0 y=0.0
+place ScintFe2 z=-10.0 x=-30.0 y=0.0
+place Scint z=+11.0 x=0.0 y=0.0
+endgroup
+
+place Iron1 z=-803.75 x=+155.0 y=+130.0
+place Iron1 z=-803.75 x=-155.0 y=+130.0
+place Iron1 z=-803.75 x=-155.0 y=-130.0
+place Iron1 z=-803.75 x=+155.0 y=-130.0
+place Iron2 z=-1748.75 x=-155.0 y=0.0
+place Iron2 z=-1748.75 x=+155.0 y=0.0
+place Iron2 z=-1168.75 x=-155.0 y=0.0
+place Iron2 z=-1168.75 x=+155.0 y=0.0
+place Iron2 z=-818.75 x=-155.0 y=0.0
+place Iron2 z=-818.75 x=+155.0 y=0.0
+place Iron2 z=-408.75 x=-155.0 y=0.0
+place Iron2 z=-408.75 x=+155.0 y=0.0
+place Iron2 z=+141.25 x=-155.0 y=0.0
+place Iron2 z=+141.25 x=+155.0 y=0.0
+place Iron3 z=-1748.75 x=0.0 y=+130.0
+place Iron3 z=-1748.75 x=0.0 y=-130.0
+place Iron3 z=-1168.75 x=0.0 y=+130.0
+place Iron3 z=-1168.75 x=0.0 y=-130.0
+place Iron3 z=-408.75 x=0.0 y=+130.0
+place Iron3 z=-408.75 x=0.0 y=-130.0
+place Iron3 z=+141.25 x=0.0 y=+130.0
+place Iron3 z=+141.25 x=0.0 y=-130.0
+place Iron4 z=+568.75 x=+75.0 y=+130.0
+place Iron4 z=+568.75 x=-75.0 y=+130.0
+place Iron5 z=+1131.25 x=+155.0 y=+130.0
+place Iron5 z=+1131.25 x=-155.0 y=+130.0
+place Iron8 z=+976.25 x=0.0 y=+130.0
+place Iron8 z=+1286.25 x=0.0 y=+130.0
+place Iron6 z=+1486.25 x=+155.0 y=+130.0
+place Iron6 z=+1486.25 x=-155.0 y=+130.0
+place Iron7 z=+1486.25 x=+155.0 y=-110.0
+place Iron7 z=+1486.25 x=-155.0 y=-110.0
+place Iron9 z=+1346.25 x=+155.0 y=0.0
+place Iron9 z=+1346.25 x=-155.0 y=0.0
+place Iron9 z=+1626.25 x=+155.0 y=0.0
+place Iron9 z=+1626.25 x=-155.0 y=0.0
+place Iron11 z=+1326.25 x=0.0 y=+130.0
+place Iron10 z=+1326.25 x=0.0 y=-110.0
+place Iron11 z=+1646.25 x=0.0 y=+130.0
+place Iron10 z=+1646.25 x=0.0 y=-110.0
+
+place Mylar z=-1783.75 x=0.0 y=0.0
+place ScintsWithIron1 z=-1255.25 x=0.0 y=0.0
+place ScintsWithIron2 z=-883.25 x=0.0 y=0.0
+place SCINT2 z=-727.25 x=0.0 y=0.0
+place AddScint1 z=-667.0 x=0.0 y=0.0
+place AddScint2 z=-611.75 x=0.0 y=0.0
+place SCINT3 z=-541.25 x=0.0 y=0.0
+place AddScint3 z=-491.15 x=0.0 y=0.0
+place SCINT4 z=-418.75 x=0.0 y=0.0
+place PyrexGlass z=+263.75 x=0.0 y=0.0
+place ScintsWithIron1 z=+1261.25 x=0.0 y=0.0
+place MCP1 rename=MCP01 z=+1321.93 coordinates=centerline
+place MCP2 rename=MCP02 z=+1378.39 coordinates=centerline
+
+place MCP1 rename=MCP03 z=+1434.85 coordinates=centerline
+place MCP1 rename=MCP04 z=+1491.31 coordinates=centerline
+
+place ScintsWithIron2 z=+1578.75 x=0.0 y=0.0
+place SCINT4 rename=AfterHodoscope z=+1781.25 x=0.0 y=0.0
+
+endgroup
+#######################################################################
+
+group ECALCrystal length=1100.5
+
+box OuterFe width=600.0 height=600.0 length=1000.0 material=Al
+box OuterHole width=590.0 height=590.0 length=1000.0  material=Air
+boolean op=subtraction BOX OuterFe OuterHole z=-2.5
+
+box InnerFoam width=589.0 height=589.0 length=965.0  material=RUBBER_NEOPRENE 
+box InnerHole width=559.0 height=559.0 length=965.0  material=Air
+boolean op=subtraction Foam InnerFoam InnerHole z=-15.0 color=1.0,0.0,0.0
+
+box Door width=600.0 height=600.0 length=5.0 material=Fe
+box DoorHole width=500.0 height=500.0 length=5.1 material=Al
+boolean op=subtraction FrontDoor Door DoorHole z=0.0
+ 
+box Folio width=499.9 height=499.9 length=0.1 material=Al color=0.66,0.66,0.66
+box FrontFoam width=555.0 height=555.0 length=30.0 material=RUBBER_NEOPRENE color=1.0,0.0,0.0
+
+
+virtualdetector DETECTOR width=25.84 height=25.48 length=0.1 material=Vacuum
+extrusion CrystalECAL length=300.0 vertices=-10.925,-11.795;-10.925,+11.795;+10.605,+11.795;+10.925,-11.795 scale2=1.18 material=PbWO4 color=1.0,0.0,0.0,0.5 maxStep=0.1
+
+extrusion CopperCooling length=300.0 vertices=-150.0,-140.0;-250.0,+140.0;+150.0,+140.0;+250.0,-140.0 scale1=1.0 material=Cu color=0.72,0.45,0.2 maxStep=0.1
+
+box CCInside length=800.0 width=250.0 height=250.0
+
+boolean op=subtraction CrystalCCooling CopperCooling CCInside z=0.0 x=-140.0 rotation=Y-90,Z-90 color=0.72,0.45,0.2
+
+place CrystalCCooling rename=CrystalCooling z=0.0 y=+15.0 coordinates=centerline rotation=Y-90,Z-90
+
+place BOX rename=ECAL_BOX z=0.0
+place Foam rename=ECAL_Foam z=0.0
+place FrontDoor rename=ECAL_Kapak z=-502.6
+place FrontFoam rename=ECAL_FrontFoam z=-485.0
+place Folio rename=ECAL_Folio z=-502.6
+
+
+param -unset crystal=-1
+param -unset crystal2=0
+
+place CrystalECAL rename=Crystal0 z=0.0 x=0.0 y=0.0 rotation=X-3,Y+3 coordinates=centerline
+place DETECTOR rename=CrystalDet0 z=150.1 x=7.5 y=7.5 rotation=X-3,Y+3 coordinates=centerline format=Extended
+
+do i 0 2
+	do k -2 2
+		param crystal=$crystal+2
+		param crystal2=$crystal2+2
+
+		#place CrystalECAL rename=Crystal$crystal z=0.0+($i*-10.0) x=0.0+($i*40.0) y=0.0+($k*40.0) rotation=Y$i*+3,X$k*-3
+		#place CrystalECAL rename=Crystal$crystal2 z=0.0+($i*+10.0) x=0.0-($i*40.0) y=0.0-($k*40.0) rotation=Y$i*-3,X$k*+3
+
+		#place DETECTOR rename=CrystalDet$crystal z=+150.1+($i*(-10.0)) x=0.0+($i*48.0) y=0.0+($k*48.0) rotation=Y$i*+3,Y$k*-3
+		#place DETECTOR rename=CrystalDet$crystal2 z=+150.1+($i*(+10.0)) x=0.0-($i*48.0) y=0.0-($k*48.0) rotation=Y$i*-3,Y$k*+3
+
+
+		place CrystalECAL rename=Crystal$crystal z=0.0+($i*-10.0) x=0.0+($i*28.0) y=0.0+($k*28.0) rotation=X-3,Y+3
+		place CrystalECAL rename=Crystal$crystal2 z=0.0+($i*+10.0) x=0.0-($i*28.0) y=0.0-($k*28.0) rotation=X-3,Y+3
+
+		place DETECTOR rename=CrystalDet$crystal z=+150.1+($i*(-10.0)) x=7.5+($i*28.0) y=7.5+($k*28.0) rotation=X-3,Y+3 format=Extended
+		place DETECTOR rename=CrystalDet$crystal2 z=+150.1+($i*(+10.0)) x=7.5-($i*28.0) y=7.5-($k*28.0) rotation=X-3,Y+3 format=Extended
+
+	enddo
+enddo
+endgroup
+#######################################################################
+
+
+
+#########################################################
+##################### Vacuum Pipes ######################
+#########################################################
+
+tubs BigTube innerRadius=79.5 outerRadius=81.5 material=STAINLESS-STEEL color=$vacuumPipeColor kill=0
+tubs TubeVacuum outerRadius=79.5 material=Vacuum color=0.5,0.5,0.0 kill=0
+tubs CollimatorVacuum material=Vacuum color=0.5,0.5,0.0 kill=0
+
+tubs GiantTube innerRadius=240.0 outerRadius=250.0 material=STAINLESS-STEEL color=$vacuumPipeColor kill=0
+tubs GiantVacuum outerRadius=240.0 material=Vacuum color=0.5,0.5,0.0 kill=0
+
+#########################################################
+##################### Beam Windows ######################
+#########################################################
+
+tubs TubeWindowAl outerRadius=102.0 length=0.1 color=1.0,0.0,0.0 material=Al kill=0
+tubs TubeWindowMy outerRadius=102.0 length=0.12 color=0.52,0.0,0.52 material=MYLAR kill=0
+tubs XCETWindow outerRadius=102.0 length=0.2 color=1.0,1.0,0.0 material=MYLAR kill=0
+
+group GiantBWDownstream length=50.0
+box Hole width=500.0 height=130.0 length=50.0 color=1.0,0.7,0.0 kill=0
+tubs Window outerRadius=300.0 length=50.0 material=Cu color=0.8,0.6,0.8 kill=0
+boolean op=subtraction GiantBeamWindow Window Hole z=0.0
+box MylarWindow width=499.999 height=129.999 length=0.12 color=0.52,0.0,0.52,0.5 material=MYLAR kill=0
+
+place GiantBeamWindow z=0.0
+place MylarWindow z=-24.0
+endgroup
+
+group GiantBWUpstream length=50.0
+box Hole width=500.0 height=130.0 length=50.0 color=1.0,0.7,0.0 kill=0
+tubs Window outerRadius=300.0 length=50.0 material=Cu color=0.8,0.6,0.8 kill=0
+boolean op=subtraction GiantBeamWindow Window Hole z=0.0
+box MylarWindow width=499.999 height=129.999 length=0.12 color=0.52,0.0,0.52,0.5 material=MYLAR kill=0
+
+place GiantBeamWindow z=0.0
+place MylarWindow z=+24.0
+endgroup
+
+#########################################################
+##################### Placements ########################
+#########################################################
+
+place BigTube rename=Tube01 length=249.4 z=25525.0
+place TubeVacuum rename=TubeVacuum01a length=19.950 z=25409.975 
+place DetTube rename=BeamStartPoint z=25420.0 format=Extended
+place TubeVacuum rename=TubeVacuum01b length=229.350 z=25535.025
+
+
+place MSNH rename=B1 By=$B1y x=+0.56 z=27250.0 rotation=Y-0.08021
+corner z=27250.0 rotation=Y-0.16043
+
+place BigTube rename=Tube02 length=349.4 z=29025.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum02 length=349.4 z=29025.0 coordinates=centerline
+
+
+place MSNH rename=B2 By=$B2y x=+0.70 z=30800.0 rotation=Y-0.10027
+corner z=30800.0 rotation=Y-0.20054
+
+
+place BigTube rename=Tube03 length=394.4 z=32597.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum03a length=189.350 z=32494.975 coordinates=centerline
+place DetTube rename=BeforeQuad1 z=32590.0 format=Extended
+place TubeVacuum rename=TubeVacuum03b length=204.950 z=32692.525 coordinates=centerline
+
+
+
+place QNL rename=Q1 gradient=$Q1 z=34290.0
+
+#fieldlines center=20,0,34290.0 radius=40 square=1 dl=1 nLines=10 exit=0
+#fieldlines center=-20,0,34290.0 radius=40 square=1 dl=1 nLines=10 exit=0
+#fieldlines center=0,-20,34290.0 radius=40 square=1 dl=1 nLines=10 exit=0
+#fieldlines center=0,20,34290.0 radius=40 square=1 dl=1 nLines=10 exit=1
+
+place BigTube rename=Tube04 length=3870.0 z=37720.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum04 length=3870.0 z=37720.0 coordinates=centerline
+
+place QNL rename=Q2 gradient=$Q2 z=41150.0
+
+place BigTube rename=Tube05 length=4600.0 z=44945.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum05 length=4600.0 z=44945.0 coordinates=centerline
+
+place QNL rename=Q3 gradient=$Q3 z=48740.0
+
+
+place BigTube rename=Tube06 length=549.4 z=50510.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum06a length=264.95 z=50367.475 coordinates=centerline
+place DetTube rename=AfterQuad3 z=50500.0 format=Extended
+place TubeVacuum rename=TubeVacuum06b length=284.350 z=50642.525 coordinates=centerline
+
+
+
+place MBNV rename=B3a By=$B3a y=-2.13626 z=53285.0 rotation=Z90,X-0.19584
+corner z=53285.0 rotation=X-0.39167
+
+place BigTube rename=Tube07 length=659.4 z=56115.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum07 length=659.0 z=56115.0 coordinates=centerline
+
+place MBNV rename=B4a By=$B4a y=-2.13626 z=58945.0 rotation=Z90,X-0.19584
+corner z=58945.0 rotation=X-0.39167
+
+place BigTube rename=Tube08 length=659.4 z=61775.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum08 length=659.4 z=61775.0 coordinates=centerline
+
+place MBNV rename=B4b By=$B4b y=-2.13626 z=64605.0 rotation=Z90,X-0.19584
+corner z=64605.0 rotation=X-0.39167
+
+place BigTube rename=Tube09 length=404.4 z=67307.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum09a length=194.350 z=67202.475 coordinates=centerline
+place DetTube rename=BeforeColi1 z=67300.0 format=Extended
+place TubeVacuum rename=TubeVacuum09b length=209.950 z=67405.025 coordinates=centerline
+
+place Collimator rename=C1m z=68010.0 x=-50.0+$c1m
+place CollimatorVacuum rename=TubeVacuum10 outerRadius=$c1p length=1000.0 z=68010.0 coordinates=centerline
+place Collimator rename=C1p z=68010.0 x=+50.0+$c1p
+
+place BigTube rename=Tube11 length=404.4 z=68712.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum11a length=189.950 z=68604.975 coordinates=centerline
+place DetTube rename=AfterColi1 z=68700.0 format=Extended
+place TubeVacuum rename=TubeVacuum11b length=214.350 z=68807.525 coordinates=centerline
+
+place MBNV rename=B3b By=$B3b y=-2.13626 z=71415.0 rotation=Z90,X-0.19584
+corner z=71415.0 rotation=X-0.39167
+
+
+place BigTube rename=Tube12 length=659.4 z=74245.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum12 length=659.4 z=74245.0 coordinates=centerline
+
+place MBNV rename=B3c By=$B3c y=-2.13626 z=77075.0 rotation=Z90,X-0.19584
+corner z=77075.0 rotation=X-0.39167
+
+place BigTube rename=Tube13 length=659.4 z=79905.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum13 length=659.4 z=79905.0 coordinates=centerline
+
+place MBNV rename=B4c By=$B4c y=-2.13626 z=82735.0 rotation=Z90,X-0.19584
+corner z=82735.0 rotation=X-0.39167
+
+
+place BigTube rename=Tube14 length=549.4 z=85510.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum14a length=264.350 z=85367.475 coordinates=centerline
+place DetTube rename=BeforeQuad4 z=85500.0 format=Extended
+place TubeVacuum rename=TubeVacuum14b length=284.950 z=85642.525 coordinates=centerline
+
+
+place QNL rename=Q4 gradient=$Q4 z=87280.0
+
+
+place BigTube rename=Tube15 length=7228.0 z=92389.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum15 length=7228.0 z=92389.0 coordinates=centerline
+
+place QNL rename=Q5 gradient=$Q5 z=97498.0
+
+place BigTube rename=Tube16 length=16594.4 z=107290.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum16a length=16586.950 z=107286.475 coordinates=centerline
+place DetTube rename=BeforeB5a z=115580.0 format=Extended
+place TubeVacuum rename=TubeVacuum16b length=7.350 z=115584.025 coordinates=centerline
+
+place MCAH rename=B5a By=$B5a x=-0.39609 z=116838.0 rotation=Y+0.07262
+corner z=116838.0 rotation=Y+0.14524
+
+
+place BigTube rename=Tube17 length=799.4 z=118488.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum17 length=799.4 z=118488.0 coordinates=centerline 
+
+place MCAH rename=B5b By=$B5b x=-0.39609 z=120138.0 rotation=Y+0.07262
+corner z=120138.0 rotation=Y+0.14524
+
+place BigTube rename=Tube18 length=799.4 z=121788.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum18a length=799.4 z=121788.0 coordinates=centerline
+
+place MCAH rename=B5c By=$B5c x=-0.39609 z=123438.0 rotation=Y+0.07262
+corner z=123438.0 rotation=Y+0.14524
+
+place BigTube rename=Tube19 length=799.4 z=125088.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum18b length=799.4 z=125088.0 coordinates=centerline
+
+place MCAH rename=B5d By=$B5d x=-0.39609 z=126738.0 rotation=Y+0.07262
+corner z=126738.0 rotation=Y+0.14524
+
+place BigTube rename=Tube20 length=1171.4 z=128574.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum20a length=611.350 z=128293.975 coordinates=centerline
+place DetTube rename=BeforeColi2 z=128600.0 format=Extended
+place TubeVacuum rename=TubeVacuum20b length=559.950 z=128880.025 coordinates=centerline
+
+place Collimator rename=C2m z=129660.0 x=-50.0+$c2m
+place Collimator rename=C2p z=129660.0 x=+50.0+$c2p
+place CollimatorVacuum rename=TubeVacuum21 outerRadius=$c2p length=1000.0 z=129660.0 coordinates=centerline
+place Collimator rename=C3m z=129660.0 y=-50.0+$c3m
+place Collimator rename=C3p z=129660.0 y=+50.0+$c3p
+
+place BigTube rename=Tube22 length=355.0 z=130337.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum22a length=139.950 z=130229.975 coordinates=centerline
+place DetTube rename=AfterColi3 z=130300.0 format=Extended
+place TubeVacuum rename=TubeVacuum22b length=214.950 z=130407.525 coordinates=centerline
+
+place QNL rename=Q6a gradient=$Q6 z=132010.0
+
+place BigTube rename=Tube22a length=1792.0 z=134401.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum22a1 length=1694.950 z=134352.475 coordinates=centerline
+place DetTube rename=BeforeTrim01 z=135200.0 format=Extended
+place TubeVacuum rename=TubeVacuum22a2 length=96.950 z=135248.525 coordinates=centerline
+
+place MDXV rename=Trim01 z=135497.0 
+
+place BigTube rename=Tube22b length=334.4 z=135864.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum22b1 length=102.950 z=135748.475 coordinates=centerline
+place DetTube rename=AfterTrim01 z=135800.0 format=Extended
+place TubeVacuum rename=TubeVacuum22b2 length=231.350 z=135916.025 coordinates=centerline
+
+
+place MCAH rename=B5e By=$B5e x=-0.39609 z=137282.0 rotation=Y+0.07262
+corner z=137282.0 rotation=Y+0.14524
+
+place BigTube rename=Tube24 length=799.4 z=138932.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum24 length=799.4 z=138932.0 coordinates=centerline
+
+place MCAH rename=B5f By=$B5f x=-0.39609 z=140582.0 rotation=Y+0.07262
+corner z=140582.0 rotation=Y+0.14524
+
+place BigTube rename=Tube25 length=799.4 z=142232.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum25 length=799.4 z=142232.0 coordinates=centerline
+
+place MCAH rename=B5g By=$B5g x=-0.39609 z=143882.0 rotation=Y+0.07262
+corner z=143882.0 rotation=Y+0.14524
+
+place BigTube rename=Tube26 length=799.4 z=145532.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum26 length=799.4 z=145532.0 coordinates=centerline
+
+place MCAH rename=B5h By=$B5h x=-0.39609 z=147182.0 rotation=Y+0.07262
+corner z=147182.0 rotation=Y+0.14524
+
+
+place BigTube rename=Tube27 length=16594.4 z=156729.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum27a length=217.350 z=148540.975 coordinates=centerline
+place DetTube rename=AfterB5h z=148650.0 format=Extended
+place TubeVacuum rename=TubeVacuum27b length=16376.950 z=156838.525 coordinates=centerline
+
+place QNL rename=Q7a gradient=$Q7a z=166522.0
+
+place BigTube rename=Tube28 length=7228.0 z=171631.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum28 length=7228.0 z=171631.0 coordinates=centerline
+
+place QNL rename=Q8a gradient=$Q8a z=176740.0
+
+place BigTube rename=Tube29 length=295.0 z=178382.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum29a length=64.950 z=178267.475 coordinates=centerline
+place DetTube rename=AfterQuad8a z=178300.0 format=Extended
+place TubeVacuum rename=TubeVacuum29b length=229.950 z=178415.025 coordinates=centerline
+
+
+place Collimator rename=C4m z=179030.0 y=-50.0+$c4m
+place CollimatorVacuum rename=TubeVacuum30 outerRadius=$c4p length=1000.0 z=179030.0 coordinates=centerline
+place Collimator rename=C4p z=179030.0 y=+50.0+$c4p
+
+
+place BigTube rename=Tube31 length=15980.0 z=187520.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum31 length=15980.0 z=187520.0 coordinates=centerline
+
+
+place Collimator rename=C5m z=196010.0 x=-50.0+$c5m
+place Collimator rename=C5p z=196010.0 x=+50.0+$c5p
+place CollimatorVacuum rename=TubeVacuum32 outerRadius=$c5p length=1000.0 z=196010.0 coordinates=centerline
+place Collimator rename=C6m z=196010.0 y=-50.0+$c6m
+place Collimator rename=C6p z=196010.0 y=+50.0+$c6p
+
+
+place BigTube rename=Tube33a length=1447.0 z=197233.5  coordinates=centerline
+place TubeVacuum rename=TubeVacuum33a1 length=1389.950 z=197204.975 coordinates=centerline
+place DetTube rename=BeforeTrim02 z=197900.0 format=Extended
+place TubeVacuum rename=TubeVacuum33a2 length=56.950 z=197928.525 coordinates=centerline
+
+place MDXH rename=Trim02 z=198157.0 
+
+place BigTube rename=Tube33b length=14133.0 z=205423.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum33b1 length=42.950 z=198378.475 coordinates=centerline
+place DetTube rename=AfterTrim02 z=198400.0 format=Extended
+place TubeVacuum rename=TubeVacuum33b2 length=14089.950 z=205445.025 coordinates=centerline
+
+place Collimator rename=C7m z=212990.0 y=-50.0+$c7m
+place CollimatorVacuum rename=TubeVacuum34 outerRadius=$c7p length=1000.0 z=212990.0 coordinates=centerline
+place Collimator rename=C7p z=212990.0 y=+50.0+$c7p
+
+place BigTube rename=Tube35 length=295.0 z=213637.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum35a length=209.950 z=213594.975 coordinates=centerline
+place DetTube rename=BeforeQuad8b z=213700.0 format=Extended
+place TubeVacuum rename=TubeVacuum35b length=84.950 z=213742.525 coordinates=centerline
+
+place QNL rename=Q8b gradient=$Q8b z=215280.0
+
+place BigTube rename=Tube36 length=7228.0 z=220389.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum36 length=7228.0 z=220389.0 coordinates=centerline
+
+place QNL rename=Q7b gradient=$Q7b z=225498.0
+
+place BigTube rename=Tube37 length=30080.0 z=242033.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum37a length=106.950 z=227046.475 coordinates=centerline
+place DetTube rename=AfterQuad7b z=227100.0 format=Extended
+place TubeVacuum rename=TubeVacuum37b length=29899.900 z=242050.000 coordinates=centerline
+place DetTube rename=BeforeAir01 z=257000.0 format=Extended
+place TubeVacuum rename=TubeVacuum37c length=73.100 z=257036.600 coordinates=centerline
+if $beamWindows==1
+	place TubeWindowAl rename=tube37WindEnd z=257073.2
+endif
+
+
+if $Scints==1
+	place trigger rename=Scint01 z=257272.0 coordinates=centerline
+endif
+
+
+if $beamWindows==1
+	place TubeWindowAl rename=tube38WindBegin z=257742.8
+endif
+place BigTube rename=Tube38 length=772.0 z=258129.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum38a length=57.100 z=257771.400 coordinates=centerline
+place DetTube rename=BeforeQuad6b z=257800.0 format=Extended
+place TubeVacuum rename=TubeVacuum38b length=714.950 z=258157.525 coordinates=centerline
+
+place QNL rename=Q6b gradient=$Q6b z=260010.0
+
+place BigTube rename=Tube39 length=31522.0 z=277266.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum39 length=31522.0 z=277266.0 coordinates=centerline
+
+place QNL rename=Q9 gradient=$Q9 z=294522.0
+
+place BigTube rename=Tube40 length=7228.0 z=299631.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum40 length=7228.0 z=299631.0 coordinates=centerline
+
+place QNL rename=Q10 gradient=$Q10 z=304740.0
+
+place BigTube rename=Tube41 length=549.4 z=306510.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum41a length=464.950 z=306467.475 coordinates=centerline
+place DetTube rename=BeforeB6a z=306700.0 format=Extended
+place TubeVacuum rename=TubeVacuum41b length=84.350 z=306742.525 coordinates=centerline
+
+place MBNV rename=B6a By=$B6a y=+2.14001 z=309285.0 rotation=Z90,X+0.19618
+corner z=309285.0 rotation=X+0.39236
+
+place BigTube rename=Tube42 length=659.4 z=312115.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum42 length=659.4 z=312115.0 coordinates=centerline
+
+place MBNV rename=B7a By=$B7a y=+2.14001 z=314945.0 rotation=Z90,X+0.19618
+corner z=314945.0 rotation=X+0.39236
+
+place BigTube rename=Tube43 length=659.4 z=317775.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum43 length=659.4 z=317775.0 coordinates=centerline
+
+place MBNV rename=B7b By=$B7b y=+2.14001 z=320605.0 rotation=Z90,X+0.19618
+corner z=320605.0 rotation=X+0.39236
+
+
+place BigTube rename=Tube44 length=1809.4 z=324010.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum44a length=94.350 z=323152.475 coordinates=centerline
+place DetTube rename=AfterB7b z=323200.0 format=Extended
+place TubeVacuum rename=TubeVacuum44b length=1714.350 z=324057.525 coordinates=centerline
+
+place MBNV rename=B6b By=$B6b y=+2.14001 z=327415.0 rotation=Z90,X+0.19618
+corner z=327415.0 rotation=X+0.39236
+
+place BigTube rename=Tube45 length=659.4 z=330245.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum45 length=659.4 z=330245.0 coordinates=centerline
+
+place MBNV rename=B6c By=$B6c y=+2.14001 z=333075.0 rotation=Z90,X+0.19618
+corner z=333075.0 rotation=X+0.39236
+
+place BigTube rename=Tube46 length=659.3 z=335905.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum46 length=659.3 z=335905.0 coordinates=centerline
+
+place MBNV rename=B7c By=$B7c y=+2.14001 z=338735.0 rotation=Z90,X+0.19618
+corner z=338735.0 rotation=X+0.39236
+
+place BigTube rename=Tube47 length=549.4 z=341510.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum47a length=64.350 z=341267.475 coordinates=centerline
+place DetTube rename=AfterB7c z=341300.0 format=Extended
+place TubeVacuum rename=TubeVacuum47b length=484.950 z=341542.525 coordinates=centerline
+
+place QNL rename=Q11 gradient=$Q11 z=343280.0
+
+place BigTube rename=Tube48 length=7228.0 z=348389.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum48 length=7228.0 z=348389.0 coordinates=centerline
+
+place QNL rename=Q12 gradient=$Q12 z=353498.0
+
+place BigTube rename=Tube49 length=13692.0 z=361839.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum49 length=13692.0 z=361839.0 coordinates=centerline
+
+place QNL rename=Q13 gradient=$Q13 z=370180.0
+
+place BigTube rename=Tube50 length=485.0 z=371917.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum50 length=424.950 z=371887.475 coordinates=centerline
+place DetTube rename=BeforeTrim03 z=372100.0 format=Extended
+place TubeVacuum rename=TubeVacuum50b length=59.950 z=372130.025 coordinates=centerline
+
+place MDSV rename=Trim03 z=372510.0
+
+place BigTube rename=Tube51 length=295 z=373007.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum51 length=55.95 z=372889.975 coordinates=centerline
+place DetTube rename=AfterTrim03 z=372920.0 format=Extended
+place TubeVacuum rename=TubeVacuum51b length=235.1 z=373037.6 coordinates=centerline
+if $beamWindows==1
+	place TubeWindowAl rename=tube51WindEnd z=373155.2
+endif
+
+
+if $WireChambers==1
+	place DWCs rename=MWPC03_04 z=373513.0 coordinates=centerline
+endif
+
+if $Scints==1
+	place trigger rename=Scint02 z=373563.0 coordinates=centerline
+endif
+
+
+if $beamWindows==1
+	place TubeWindowAl rename=tube52WindBegin z=373754.8
+endif
+place BigTube rename=Tube52 length=399.36 z=373955.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum52a length=45.1 z=373777.4 coordinates=centerline
+place DetTube rename=BeforeB8a z=373800.0 format=Extended
+place TubeVacuum rename=TubeVacuum52b length=354.31 z=373977.525 coordinates=centerline
+
+
+place MBNH rename=B8a By=$B8a x=2.25001 z=376655.0 rotation=Y-0.20626
+corner z=376655.0 rotation=Y-0.41253
+
+
+place BigTube rename=Tube53 length=659.36 z=379485.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum53 length=659.36 z=379485.0 coordinates=centerline
+
+place MBNH rename=B8b By=$B8b x=2.25001 z=382315.0 rotation=Y-0.20626
+corner z=382315.0 rotation=Y-0.41253
+
+
+place BigTube rename=Tube54 length=404.4 z=385017.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum54 length=84.340 z=384857.475 coordinates=centerline
+place DetTube rename=AafterB8b z=384900.0 format=Extended
+place TubeVacuum rename=TubeVacuum54b length=319.950 z=385060.025 coordinates=centerline
+
+place Collimator rename=C8m z=385720.0 y=-50.0+$c8m
+place CollimatorVacuum rename=TubeVacuum55 outerRadius=$c8p length=1000.0 z=385720.0 coordinates=centerline
+place Collimator rename=C8p z=385720.0 y=+50.0+$c8p
+
+
+place BigTube rename=Tube56 length=310.0 z=386375.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum56 length=310.0 z=386375.0 coordinates=centerline
+
+place MDXV rename=Trim04 z=386730.0
+
+place BigTube rename=Tube57 length=4164.36 z=389012.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum57 length=4069.950 z=388964.975 coordinates=centerline
+place DetTube rename=BeforeB9a z=391000.0 format=Extended
+place TubeVacuum rename=TubeVacuum57b length=94.310 z=391047.525 coordinates=centerline
+
+place MBNH rename=B9a By=$B9a x=2.25001 z=393595.0 rotation=Y-0.20626
+corner z=393595.0 rotation=Y-0.41253
+
+place BigTube rename=Tube58 length=879.36 z=396535.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum58 length=879.36 z=396535.0 coordinates=centerline
+
+place MBNH rename=B9b By=$B9b x=2.25001 z=399475.0 rotation=Y-0.20626
+corner z=399475.0 rotation=Y-0.41253
+
+
+place BigTube rename=Tube59 length=934.4 z=402442.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum59a length=99.340 z=402024.975 coordinates=centerline
+place DetTube rename=AfterB9b z=402075.0 format=Extended
+place TubeVacuum rename=TubeVacuum59b length=834.95 z=402492.525 coordinates=centerline
+if $beamWindows==1
+	place TubeWindowMy rename=tube59bWindEnd z=402910.06
+endif
+
+
+if $WireChambers==1
+	place DWCs rename=MWPC03_04 z=403133.0 coordinates=centerline
+endif
+
+
+if $Scints==1
+	place trigger rename=Scint02 z=403197.0 coordinates=centerline
+endif
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube59cWindBegin z=403539.94
+endif
+place BigTube rename=Tube59c length=17487.0 z=412283.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum59c length=17487.0 z=412283.5 coordinates=centerline
+
+
+place QNL rename=Q14 gradient=$Q14 z=422522.0
+
+place BigTube rename=Tube60 length=18548.0 z=433291.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum60 length=18548.0 z=433291.0 coordinates=centerline
+
+place QNL rename=Q15 gradient=$Q15 z=444060.0
+
+
+place BigTube rename=Tube61 length=5955.0 z=448532.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum61 length=5955.0 z=448532.5 coordinates=centerline
+
+
+place Collimator rename=C9m z=452010.0 x=-50.0+$c9m
+place Collimator rename=C9p z=452010.0 x=+50.0+$c9p
+place CollimatorVacuum rename=TubeVacuum62 outerRadius=$c9p length=1000.0 z=452010.0 coordinates=centerline
+place Collimator rename=C10m z=452010.0 y=-50.0+$c10m
+place Collimator rename=C10p z=452010.0 y=+50.0+$c10p
+
+
+place BigTube rename=Tube63 length=175.0 z=452597.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum63a length=59.95 z=452539.975 coordinates=centerline
+place DetTube rename=AfterCol10 z=452570.0 format=Extended
+place TubeVacuum rename=TubeVacuum63b length=114.95 z=452627.525 coordinates=centerline
+if $beamWindows==1
+	place TubeWindowMy rename=tube63bWindEnd z=452685.06
+endif
+
+
+if $Scints==1
+	place trigger rename=Scint06 z=452823.0 coordinates=centerline
+endif
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube63cWindBegin z=452885.94
+endif
+place BigTube rename=Tube64 length=20711 z=463241.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum63c length=113.95 z=452942.975 coordinates=centerline
+place DetTube rename=AfterScint06 z=453000.0 format=Extended
+place TubeVacuum rename=TubeVacuum63d length=20596.95 z=463298.525 coordinates=centerline
+
+place QNL rename=Q16a gradient=$Q16a z=475092.0
+
+place BigTube rename=Tube64 length=440.0 z=476807.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum64 length=440.0 z=476807.0 coordinates=centerline
+
+place QNL rename=Q16b gradient=$Q16b z=478522.0
+
+place BigTube rename=Tube65a length=320.0 z=480177.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum65a length=320.0 z=480177.0 coordinates=centerline
+if $beamWindows==1
+	place TubeWindowMy rename=tube65aWindEnd z=480337.06
+endif
+
+
+if $Scints==1
+	place trigger rename=Scint04 z=480423.0 coordinates=centerline
+endif
+
+if $Scints==1
+	place trigger rename=Scint05 z=480604.0 coordinates=centerline
+endif
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube65bWindBegin z=480700.0
+endif
+place BigTube rename=Tube65b length=171.94 z=480786.03 coordinates=centerline
+place TubeVacuum rename=TubeVacuum65b length=171.94 z=480786.03 coordinates=centerline
+
+place MDXH rename=Trim05 z=481072.0
+
+place BigTube rename=Tube66 length=370.0 z=481457.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum66 length=370.0 z=481457.0 coordinates=centerline
+
+place MDXV rename=Trim06 z=481842.0
+
+place BigTube rename=Tube67 length=5449.94 z=484766.970 coordinates=centerline
+place TubeVacuum rename=TubeVacuum67a length=5307.95 z=484695.975 coordinates=centerline
+place DetTube rename=AfterTrim06 z=487350.0 format=Extended
+place TubeVacuum rename=TubeVacuum67b length=141.89 z=487420.995 coordinates=centerline
+if $beamWindows==1
+	place TubeWindowMy rename=tube67bWindEnd z=487492.0
+endif
+
+if $WireChambers==1
+	place DWCs rename=XDWC01_02 z=487582.0 coordinates=centerline
+endif
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube67cWindBegin z=487782.0
+endif
+
+place BigTube rename=Tube67c length=27394.88 z=501479.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum67c length=27394.88 z=501479.5 coordinates=centerline
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube67cWindEnd z=515177.0
+endif
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube68aWindBegin z=520961.94
+endif
+place BigTube rename=Tube68 length=3490.0 z=522707.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum68a length=87.95 z=521005.975 coordinates=centerline
+place DetTube rename=BeforeQ23 z=521050.0 format=Extended
+place TubeVacuum rename=TubeVacuum68b length=3401.95 z=522751.025 coordinates=centerline
+
+place QNL rename=Q23 gradient=$Q23 z=525947.0
+
+place BigTube rename=Tube69 length=9000.0 z=531942.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum69 length=9000.0 z=531942.0 coordinates=centerline
+
+place QNL rename=Q24 gradient=$Q24 z=537937.0
+
+place BigTube rename=Tube70 length=321.0 z=539592.500 coordinates=centerline
+place TubeVacuum rename=TubeVacuum70a length=217.950 z=539540.975 coordinates=centerline
+place DetTube rename=AfterQ24 z=539650.0 format=Extended
+place TubeVacuum rename=TubeVacuum70b length=102.950 z=539701.525 coordinates=centerline
+if $beamWindows==1
+	place TubeWindowMy rename=tube70bWindEnd z=539753.06
+endif
+
+if $WireChambers==1
+	place DWCs rename=XDWC07a z=539796.66 coordinates=centerline
+endif
+
+if $Scints==1
+	place trigger rename=Scint07a z=539869.76 coordinates=centerline
+endif
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube71WindBegin z=540029.36
+endif
+place BigTube rename=Tube71 length=2280.0 z=541169.96 coordinates=centerline
+place TubeVacuum rename=TubeVacuum71a length=730.950 z=540395.435 coordinates=centerline
+place DetTube rename=NA64 z=540760.96 format=Extended
+place TubeVacuum rename=TubeVacuum71b length=1000.0 z=541261.01 coordinates=centerline
+place DetTube rename=BeforeXTDV22601 z=541761.06 format=Extended
+place TubeVacuum rename=TubeVacuum71c length=548.85 z=542035.535 coordinates=centerline
+if $beamWindows==1
+	place TubeWindowMy rename=tube71WindEnd z=542310.06
+endif
+
+
+group RectangularPipe length=6050.6
+box MBPLOuter width=1740.0 height=1160.0 length=2000.0 material=STAINLESS-STEEL color=0.5,1.0,0,5
+box MBPLHole width=1020.0 height=140.0 length=2000.1 material=STAINLESS-STEEL color=0.5,1.0,0,5
+boolean op=subtraction MBPL MBPLOuter MBPLHole z=0.0 color=0.0,0.4,0.0
+
+box RectTube width=320.0 height=120.0 length=6049.88 material=STAINLESS-STEEL color=0.0,1.0,0.0
+box RectTubeHole width=315.0 height=115.0 length=6049.89 material=STAINLESS-STEEL color=0.0,1.0,0.0
+boolean op=subtraction TUBE RectTube RectTubeHole z=0.0
+
+box Vacuum width=314.999 height=114.999 length=6049.88 material=Vacuum color=0.5,0.5,0.0
+tubs WindowMy outerRadius=157.495 length=0.12 color=0.52,0.0,0.52 material=MYLAR kill=0
+
+place TUBE rename=tubeRectengular1 z=0.0
+place Vacuum rename=vacuumRectengular z=0.0
+if $beamWindows==1
+	place WindowMy rename=RectangularMylar10 z=-3025.2
+	place WindowMy rename=RectangularMylar20 z=+3025.2
+endif
+place MBPL rename=B21a z=+1160.0
+place MBPL rename=B21b z=-1175.0
+endgroup
+
+place RectangularPipe rename=rectengularPipee z=545336.66
+
+
+place GiantBWUpstream rename=GiantBWUpstream1 z=548386.96 x=-90.0
+place GiantTube rename=GiantTube1 length=10290.0 z=553556.96 x=-90.0
+place GiantVacuum rename=GiantVacuum1 length=10290.0 z=553556.96 x=-90.0
+place GiantBWDownstream rename=GiantBWDownstream1 z=558726.96 x=-90.0
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube72WindBegin z=558842.02
+endif
+place BigTube rename=Tube72 length=39758.04 z=578721.10 coordinates=centerline
+place TubeVacuum rename=TubeVacuum72 length=39758.04 z=578721.10 coordinates=centerline
+if $beamWindows==1
+	place TubeWindowMy rename=tube72WindEnd z=598600.18
+endif
+
+if $Scints==1
+	place trigger rename=Scint08 z=598841.24 coordinates=centerline
+endif
+
+if $WireChambers==1
+	place DWCs rename=MWPC09_10 z=599090.24 coordinates=centerline
+endif
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube73WindBegin z=601799.94
+endif
+
+
+place BigTube rename=Tube73 length=9155.0 z=635072.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum73 length=9155.0 z=635072.5 coordinates=centerline
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube73WindEnd z=627295.06
+endif
+
+
+##################
+### Air XTDV022628
+##################
+
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube74WindBegin z=630494.94
+endif
+
+place BigTube rename=Tube74 length=25495.0 z=614547.5 coordinates=centerline
+place TubeVacuum rename=TubeVacuum74 length=25495.0 z=614547.5 coordinates=centerline
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube74WindEnd z=639650.06
+endif
+
+
+
+
+if $WireChambers==1
+	place DWCs rename=MWPC11_12 z=639750.0 coordinates=centerline
+endif
+
+
+if $Scints==1
+	place trigger rename=Scint09 z=639850.0 coordinates=centerline
+endif
+
+
+place DetTube rename=Det022640 z=639930.0 format=Extended
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube75WindBegin z=639949.94
+endif
+
+
+
+
+
+
+
+
+place BigTube rename=Tube75 length=11630.0 z=645765.0 coordinates=centerline
+place TubeVacuum rename=TubeVacuum75 length=11630.0 z=645765.0 coordinates=centerline
+
+
+
+
+
+
+
+if $beamWindows==1
+	place TubeWindowMy rename=tube75WindEnd z=651580.06
+endif
+
+if $WireChambers==1
+	place DWCs rename=MWP13_14 z=652726.240 coordinates=centerline
+endif
+
+if $Scints==1
+	place trigger rename=Scint10 z=652786.240 coordinates=centerline
+endif
+
+
+
+if $GIFShielding==1
+
+	place FLOOR1 x=$shieldRefX y=$shieldRefY z=$shieldRefZ
+	place FLOOR2 x=$shieldRefX-400 y=$shieldRefY z=$shieldRefZ+7200
+	place FLOOR3 x=$shieldRefX-400 y=$shieldRefY-800 z=$shieldRefZ+13600
+	place FLOOR4 x=$shieldRefX-2200 y=$shieldRefY-2400 z=$shieldRefZ+19600
+	place FLOOR1b x=$shieldRefX y=$shieldRefY z=$shieldRefZ-5600
+
+	place BLOCKtarg1 x=$shieldRefX-1575 y=$shieldRefY+1600 z=$shieldRefZ-4400
+	place BLOCKtarg2 x=$shieldRefX+2000 y=$shieldRefY+1600 z=$shieldRefZ-4400
+	place BLOCKtarg3 x=$shieldRefX+1600 y=$shieldRefY+1600 z=$shieldRefZ-5600
+	place ROOF1 x=$shieldRefX y=$shieldRefY+3200 z=$shieldRefZ-4400
+
+	place WALL1 x=$shieldRefX+2000 y=$shieldRefY+2000 z=$shieldRefZ
+	place WALL1 x=$shieldRefX-2000 y=$shieldRefY+2000 z=$shieldRefZ
+
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+1*800
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+2*800
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+3*800
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+4*800
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+5*800
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+6*800
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+7*800
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+8*800
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+9*800
+	place ROOF1 x=$shieldRefX y=$shieldRefY+4000 z=$shieldRefZ-4400+10*800
+
+	place WALL2a x=$shieldRefX-2400 y=$shieldRefY+2000 z=$shieldRefZ+5200
+	place WALL2b x=$shieldRefX-2400 y=$shieldRefY+1600 z=$shieldRefZ+8000
+	place WALL2c x=$shieldRefX-2400 y=$shieldRefY+1200 z=$shieldRefZ+11200
+	place WALL2d x=$shieldRefX+1600 y=$shieldRefY+1200 z=$shieldRefZ+12400
+
+	place BLOCKtarg3 x=$shieldRefX-350 y=$shieldRefY+1600 z=$shieldRefZ+8000
+	place BLOCKtarg3 x=$shieldRefX+1600 y=$shieldRefY+1600 z=$shieldRefZ+8800
+
+	place DUMPfeet x=$shieldRefX+1150 y=$shieldRefY-100 z=$shieldRefZ+17200
+	place DUMPfeet x=$shieldRefX+1150 y=$shieldRefY-100 z=$shieldRefZ+15800
+	place DUMPbody x=$shieldRefX+1150 y=$shieldRefY+1000 z=$shieldRefZ+16500
+	place DUMPneck x=$shieldRefX+1350 y=$shieldRefY+2200 z=$shieldRefZ+16500
+	place DUMPhead x=$shieldRefX+950 y=$shieldRefY+3000 z=$shieldRefZ+16500
+	place DUMPiron x=$shieldRefX+550 y=$shieldRefY+2200 z=$shieldRefZ+16600
+
+endif
+
+place Hodoscope rename=Hodo z=656000.0 coordinates=centerline
+
+#place BeforeMCP rename=BeforeMCPs z=659500.0 coordinates=centerline format=Extended
+
+#place MCP1 rename=MCP01 z=657321.93 coordinates=centerline
+#place MCP1 rename=MCP01 z=659600.0 coordinates=centerline
+#place MCP2 rename=MCP02 z=659700.0 coordinates=centerline
+
+#place BeforeMCP rename=AfterMCPs z=659800.0 coordinates=centerline format=Extended
+
+if $ECALBox==1
+	place ECALCrystal rename=ECALL z=660500.0 coordinates=centerline
+endif
+
+place ECAL rename=ECALFront z=658648.8 format=Extended
+#place ECAL rename=ECALFront z=659900.0 format=Extended
+#place ECAL_Back rename=ECALBack z=661100.0 format=Extended
+
+
+
+ntuple GoodParticle category=NTuples perTrack=1 detectors=ECALFront \
+required=SCINT2,AddScint1,AddScint2,SCINT3
+
+
+#########################################################
+#########################################################
+#########################################################
+
+
+g4ui when=4 "/vis/viewer/set/viewpointThetaPhi -90 0"
+g4ui when=4 "/vis/viewer/set/style wireframe"
+
+param histoFile=$outRoot
+
